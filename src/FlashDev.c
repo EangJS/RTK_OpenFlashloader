@@ -23,6 +23,29 @@
  */
  
 #include "FlashOS.h"        // FlashOS Structures
+#include "config.h"
+
+#ifdef AMEBAGREEN2
+
+__attribute__((section("DevDscr"))) 
+struct FlashDevice const FlashDevice = {
+    FLASH_DRV_VERS,                      // Driver Version
+    "GD25Q32 4MB External QSPI Flash",   // Device Name
+    EXTSPI,                              // Device Type
+    0x08000000,                          // Device Start Address (QSPI memory-mapped base)
+    0x00400000,                          // Total Device Size (4 MB)
+
+    256,                                 // Page Size (256 bytes)
+    0,                                   // Reserved
+    0xFF,                                // Initial Content of Erased Memory
+    50,                                  // Program Timeout (ms)
+    4000,                                // Erase Timeout (ms)
+
+    0x001000, 0x08000000,                // Sector Size = 4 KB, Sector Start Address
+    SECTOR_END                           // End of Sector List
+};
+
+#elif defined(AMEBADPLUS) /* AMEBAGREEN2 */
 
 /**
  * For AmebaDPlus RTL8721DCM
@@ -43,3 +66,6 @@ __attribute__((section("DevDscr"))) struct FlashDevice const FlashDevice  =  {
     0x001000, 0x08000000,    // ? 4 KB uniform sectors
     SECTOR_END
 };
+
+#endif /* AMEBADPLUS */
+

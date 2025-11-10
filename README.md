@@ -12,8 +12,8 @@ The output is a **`.elf`** binary compatible with SEGGER JFlash.
 
 ## Supported Ameba Boards
 
-* AmebaDPlus (RTL8721DXX)
-* More to come...
+* AmebaDPlus  (RTL8721DXX)
+* AmebaGreen2 (RTL8721F)
 
 ---
 
@@ -29,6 +29,14 @@ The output is a **`.elf`** binary compatible with SEGGER JFlash.
 ---
 
 ## 🚀 Build Instructions
+
+Configure the chipset to build by setting defines in `project.config`
+
+> Only 1 chipset can be used at a time.
+
+#### Options
+* CONFIG_AMEBAGREEN2=y
+* CONFIG_AMEBADPLUS=y
 
 From the project root:
 
@@ -60,7 +68,7 @@ output/
 > [!NOTE]
 > AmebaDPlus is used as the example
 
-Add the flashloader into the `.xml` of the device profile to use in 
+Copy the respective device `.xml` located in `devices/` to the following directory: 
 
 Windows
 `C:\Users\user\AppData\Roaming\SEGGER\JLinkDevices\Realtek\AmebaDPlus\RTL8721DXX.xml`
@@ -69,21 +77,8 @@ or
 
 Linux `/home/user/.SEGGER/JLinkDevices\Realtek\AmebaDPlus\RTL8721DXX.xml`
 
-```xml
-<Database>
-  <Device>
-    <ChipInfo Vendor="Realtek" Name="RTL8721DX_KM4" Core="JLINK_CORE_CORTEX_M55" WorkRAMAddr="0x3000A020" WorkRAMSize="0x8000" JLinkScriptFile="jlink_script/AP2_KM4.JLinkScript" />
-    <FlashBankInfo Name="NOR Flash" BaseAddr="0x08000000">
-      <LoaderInfo Name="Default" MaxSize="0x01000000" Loader="FlashLoader.elf" LoaderType="FLASH_ALGO_TYPE_OPEN" />
-    </FlashBankInfo>
-  </Device>
-  <Device>
-    <ChipInfo Vendor="Realtek" Name="RTL8721DX_KM0" Core="JLINK_CORE_CORTEX_M23" JLinkScriptFile="jlink_script/AP1_KM0.JLinkScript" />
-  </Device>
-</Database>
-```
 
-Place the FlashLoader.elf in the same level directory as the `RTL8721DXX.xml`
+Place the `FlashLoader.elf` in the same level directory as the `RTL8721DXX.xml`
 
 > [!NOTE] 
 > You should have already added the jlink_scripts into a folder called `JLinkDevices\Realtek\AmebaDPlus\jlink_script`

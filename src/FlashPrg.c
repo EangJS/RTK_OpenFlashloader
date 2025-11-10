@@ -38,6 +38,15 @@
  */
 PRG_CODE_SECTION int Init( uint32_t adr, uint32_t clk, uint32_t fnc )
 {
+    
+#ifdef AMEBAGREEN2
+	_memset((void *) __rom_bss_start__, 0, (__rom_bss_end__ - __rom_bss_start__));
+	_memset((void *) __rom_bss_start_s__, 0, (__rom_bss_end_s__ - __rom_bss_start_s__));
+    BOOT_ROM_OSC131_Enable();
+	BOOT_ROM_SPUFlash();
+    BOOT_ROM_InitSpic();
+#endif /* AMEBAGREEN2 */
+
     SCB_DisableDCache();
     WDG_Refresh( IWDG_DEV );
     FLASH_Read_HandShake_Cmd( 0, 0 );

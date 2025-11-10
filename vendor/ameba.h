@@ -1,4 +1,10 @@
-#include "rtl8721d.h"
+#include <stddef.h>
+#include "config.h"
+#if CONFIG_AMEBADPLUS
+    #include "rtl8721d.h"
+#else
+    #include "rtl8721f.h"
+#endif /* CONFIG_AMEBADPLUS */
 
 #define _LONG_CALL_     __attribute__ ((long_call))
 
@@ -50,4 +56,6 @@ _LONG_CALL_ void FLASH_Read_HandShake_Cmd(uint32_t Dphy_Dly_Cnt, uint32_t NewSta
 _LONG_CALL_ void FLASH_DeepPowerDown(uint32_t NewState);
 _LONG_CALL_ void WDG_Refresh(WDG_TypeDef *WDG);
 _LONG_CALL_ void _memcpy(void *dst, void *src, uint32_t sz);
+_LONG_CALL_ void *_memset(void *s, int c, size_t n);
+
 static void Flash_Write_Lock_IPC(uint8_t sync_type);
