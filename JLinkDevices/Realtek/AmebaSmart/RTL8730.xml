@@ -1,0 +1,14 @@
+<Database>
+  <Device>
+    <ChipInfo Vendor="Realtek" Name="RTL8730_CA32_0" Core="JLINK_CORE_CORTEX_A32" JLinkScriptFile="jlink_script/AP3_CA32_Core0.JLinkScript" />
+  </Device>
+  <Device>
+    <ChipInfo Vendor="Realtek" Name="RTL8730_CA32_1" Core="JLINK_CORE_CORTEX_A32" JLinkScriptFile="jlink_script/AP3_CA32_Core1.JLinkScript" />
+  </Device>
+  <Device>
+    <ChipInfo Vendor="Realtek" Name="RTL8730_KM0" Core="JLINK_CORE_CORTEX_M23" JLinkScriptFile="jlink_script/AP0_KM0.JLinkScript" />
+  </Device>
+  <Device>
+    <ChipInfo Vendor="Realtek" Name="RTL8730_KM4" Core="JLINK_CORE_CORTEX_M33" JLinkScriptFile="jlink_script/AP1_KM4.JLinkScript" />
+  </Device>  
+</Database>

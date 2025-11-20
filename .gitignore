@@ -1,3 +1,9 @@
 build/
 output/
 .vscode/
+dist/
+__pycache__/
+*.pyc
+*.zip
+*.spec
+*.elf

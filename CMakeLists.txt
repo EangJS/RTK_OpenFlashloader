@@ -6,28 +6,6 @@ set(CMAKE_C_COMPILER arm-none-eabi-gcc)
 set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
 set(CMAKE_ASM_COMPILER arm-none-eabi-gcc)
 
-# Include directories
-include_directories(
-    ${CMAKE_SOURCE_DIR}/inc
-    ${CMAKE_SOURCE_DIR}/vendor
-)
-
-# Executable
-add_executable(FlashLoader.elf
-    src/FlashPrg.c
-    src/FlashDev.c
-)
-
-# Compiler options
-target_compile_options(FlashLoader.elf PRIVATE
-    -mcpu=cortex-m33
-    -mthumb
-    -Os
-    -ffunction-sections
-    -fdata-sections
-    -fno-builtin
-)
-
 # -----------------------------
 # Parse project.config
 # -----------------------------
@@ -58,14 +36,49 @@ if(EXISTS ${PROJECT_CONFIG_FILE})
             list(APPEND CONFIG_DEFINES "${KEY}=${VALUE}")
 
             message(STATUS "Config: ${KEY} = ${VALUE}")
+
+            # Extract CHIP_NAME
+            if(KEY STREQUAL "AMEBAGREEN2")
+                set(CHIP_NAME "AMEBAGREEN2")
+                message(STATUS "Detected CHIP_NAME: ${CHIP_NAME}")
+            elseif(KEY STREQUAL "AMEBADPLUS")
+                set(CHIP_NAME "AMEBADPLUS")
+                message(STATUS "Detected CHIP_NAME: ${CHIP_NAME}")
+            else()
+                set(CHIP_NAME "UNKNOWN")
+            endif()
+            set(TARGET_NAME "${CHIP_NAME}.elf")
+
         endif()
     endforeach()
 else()
     message(WARNING "No project.config found")
 endif()
 
+# Include directories
+include_directories(
+    ${CMAKE_SOURCE_DIR}/inc
+    ${CMAKE_SOURCE_DIR}/vendor
+)
+
+# Executable
+add_executable(${TARGET_NAME}
+    src/FlashPrg.c
+    src/FlashDev.c
+)
+
+# Compiler options
+target_compile_options(${TARGET_NAME} PRIVATE
+    -mcpu=cortex-m33
+    -mthumb
+    -Os
+    -ffunction-sections
+    -fdata-sections
+    -fno-builtin
+)
+
 # Include generated header
-target_include_directories(FlashLoader.elf PRIVATE ${CMAKE_BINARY_DIR})
+target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_BINARY_DIR})
 
 # -----------------------------
 # Preprocess linker script
@@ -84,12 +97,12 @@ add_custom_command(
 )
 
 add_custom_target(PreprocessLinker ALL DEPENDS ${LINKER_SCRIPT_PP})
-add_dependencies(FlashLoader.elf PreprocessLinker)
+add_dependencies(${TARGET_NAME} PreprocessLinker)
 
 # -----------------------------
 # Link using preprocessed script
 # -----------------------------
-target_link_options(FlashLoader.elf PRIVATE
+target_link_options(${TARGET_NAME} PRIVATE
     -Wl,-T${LINKER_SCRIPT_PP}
     -nostartfiles
     -Wl,--gc-sections,--no-warn-rwx-segments
@@ -99,6 +112,6 @@ target_link_options(FlashLoader.elf PRIVATE
 # Pass macros to compiler and linker
 # -----------------------------
 foreach(def ${CONFIG_DEFINES})
-    target_compile_definitions(FlashLoader.elf PRIVATE ${def})
-    target_link_options(FlashLoader.elf PRIVATE "-Wl,-defsym,${def}")
+    target_compile_definitions(${TARGET_NAME} PRIVATE ${def})
+    target_link_options(${TARGET_NAME} PRIVATE "-Wl,-defsym,${def}")
 endforeach()

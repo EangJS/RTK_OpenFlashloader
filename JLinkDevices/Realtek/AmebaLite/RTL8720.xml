@@ -1,0 +1,5 @@
+<Database>
+  <Device>
+    <ChipInfo Vendor="Realtek" Name="RTL8720_KM4" Core="JLINK_CORE_CORTEX_M33" JLinkScriptFile="jlink_script/AP0_KM4.JLinkScript" />
+  </Device>
+</Database>

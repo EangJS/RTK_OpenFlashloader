@@ -1,0 +1,5 @@
+<Database>
+  <Device>
+    <ChipInfo Vendor="Realtek" Name="RTL8720CX" Core="JLINK_CORE_CORTEX_M33" />
+  </Device>
+</Database>
