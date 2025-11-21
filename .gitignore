@@ -7,3 +7,5 @@ __pycache__/
 *.zip
 *.spec
 *.elf
+project.config
+

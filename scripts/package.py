@@ -9,7 +9,7 @@ target_dirs = {
 }
 
 # Source directory to scan
-source_dir = "build"
+source_dir = "../build"
 jlink_devices_dir = "../JLinkDevices"
 output_zip_path = "JLinkDevices.zip"
 

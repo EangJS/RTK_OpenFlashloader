@@ -38,16 +38,23 @@ if(EXISTS ${PROJECT_CONFIG_FILE})
             message(STATUS "Config: ${KEY} = ${VALUE}")
 
             # Extract CHIP_NAME
+            message(STATUS "Processing KEY: ${KEY}")
             if(KEY STREQUAL "AMEBAGREEN2")
                 set(CHIP_NAME "AMEBAGREEN2")
                 message(STATUS "Detected CHIP_NAME: ${CHIP_NAME}")
             elseif(KEY STREQUAL "AMEBADPLUS")
                 set(CHIP_NAME "AMEBADPLUS")
                 message(STATUS "Detected CHIP_NAME: ${CHIP_NAME}")
-            else()
-                set(CHIP_NAME "UNKNOWN")
             endif()
-            set(TARGET_NAME "${CHIP_NAME}.elf")
+            
+            if(KEY STREQUAL "FLASH_SIZE_4MB")
+                set(FLASH_SIZE "4MB")
+                message(STATUS "Detected FLASH_SIZE: ${FLASH_SIZE}")
+            elseif(KEY STREQUAL "FLASH_SIZE_16MB")
+                set(FLASH_SIZE "16MB")
+                message(STATUS "Detected FLASH_SIZE: ${FLASH_SIZE}")
+            endif()
+            set(TARGET_NAME "${CHIP_NAME}_${FLASH_SIZE}.elf")
 
         endif()
     endforeach()
@@ -89,7 +96,6 @@ set(LINKER_SCRIPT_PP ${CMAKE_BINARY_DIR}/FlashLoader.pp.ld)
 add_custom_command(
     OUTPUT ${LINKER_SCRIPT_PP}
     COMMAND ${CMAKE_C_COMPILER} -E -P
-        $<$<BOOL:${CONFIG_DEFINES}>:-D${CONFIG_DEFINES}>
         ${LINKER_SCRIPT_SRC}
         -o ${LINKER_SCRIPT_PP}
     DEPENDS ${LINKER_SCRIPT_SRC} ${PROJECT_CONFIG_FILE}

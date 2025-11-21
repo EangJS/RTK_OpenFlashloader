@@ -12,7 +12,7 @@ SCRIPT_NAME = "installer.py"       # Your installer script
 PAYLOAD_ZIP = "JLinkDevices.zip"        # ZIP file to embed
 DIST_DIR = PROJECT_DIR / "dist"    # Output directory
 BUILD_DIR = PROJECT_DIR / "build"  # PyInstaller build directory
-EXE_NAME = "SEGGERInstaller"   # Final EXE name
+EXE_NAME = "RTKJLinkDevicesInstaller"   # Final EXE name
 
 # -------------------------
 # UTILITY FUNCTIONS

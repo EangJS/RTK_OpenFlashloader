@@ -2,7 +2,8 @@
   <Device>
     <ChipInfo Vendor="Realtek" Name="RTL8721F_TZ" Core="JLINK_CORE_CORTEX_M55" WorkRAMAddr="0x30070020" WorkRAMSize="0x8000" JLinkScriptFile="jlink_script/AP2_AP.JLinkScript" />
     <FlashBankInfo Name="NOR Flash" BaseAddr="0x08000000">
-      <LoaderInfo Name="Default" MaxSize="0x01000000" Loader="FlashLoader.elf" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+      <LoaderInfo Name="16M" MaxSize="0x01000000" Loader="AMEBAGREEN2_16MB.elf" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+      <LoaderInfo Name="4M" MaxSize="0x00400000" Loader="AMEBAGREEN2_4MB.elf" LoaderType="FLASH_ALGO_TYPE_OPEN"/>
     </FlashBankInfo>
   </Device>
   <Device>

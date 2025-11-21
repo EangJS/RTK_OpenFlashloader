@@ -9,6 +9,10 @@ BUILD_DIR = os.path.join(PROJECT_ROOT, "build")
 CMAKE_GENERATOR = "Ninja"
 
 devices = ["AMEBAGREEN2", "AMEBADPLUS"]
+flash_sizes = {
+    "AMEBAGREEN2": ["4MB", "16MB"],
+    "AMEBADPLUS": ["4MB"],
+}
 
 def run_cmd(cmd, cwd=None):
     print(f"\n>>> {' '.join(cmd)}")
@@ -17,10 +21,11 @@ def run_cmd(cmd, cwd=None):
         print(f"❌ Command failed: {' '.join(cmd)}")
         sys.exit(result.returncode)
 
-def build_device(device):
+def build_device(device, flash_size):
     with open("project.config", "w") as f:
         f.write(f"CONFIG_{device}=y\n")
-    print(f"Building for device: {device}")
+        f.write(f"CONFIG_FLASH_SIZE_{flash_size}=y\n")
+    print(f"Building for device: {device} with flash size: {flash_size}")
     run_cmd([
         "cmake",
         "-G", CMAKE_GENERATOR,
@@ -34,7 +39,8 @@ def main():
     os.makedirs(BUILD_DIR, exist_ok=True)
 
     for device in devices:
-        build_device(device)
+        for flash_size in flash_sizes[device]:
+            build_device(device, flash_size)
         target_name = f"{device}.elf"
         elf_src = os.path.join(BUILD_DIR, target_name)
         if os.path.isfile(elf_src):
