@@ -14,6 +14,7 @@ The output is a **`.elf`** binary compatible with SEGGER JFlash.
 
 * AmebaDPlus  (RTL8721DXX)
 * AmebaGreen2 (RTL8721F)
+* AmebaSmart  (RTL8730EX)
 
 ---
 
@@ -30,19 +31,13 @@ The output is a **`.elf`** binary compatible with SEGGER JFlash.
 
 ## 🚀 Build Instructions
 
-Configure the chipset to build by setting defines in `project.config`
-
-> Only 1 chipset can be used at a time.
-
-#### Options
-* CONFIG_AMEBAGREEN2=y
-* CONFIG_AMEBADPLUS=y
-
 From the project root:
 
 ```sh
 ./build.py
 ```
+
+to perform build on all supported chips.
 
 To perform a clean build
 ```
@@ -55,7 +50,7 @@ After a successful build, you will find:
 
 ```
 output/
-└── FlashLoader.elf
+└── CHIPNAME_FLASHSIZE.elf
 ```
 
 ## Usage
@@ -65,6 +60,19 @@ output/
 * SEGGER JLINK PLUS or higher
 
 #### Installation
+
+### Automated Installation
+
+1. `cd` into the `scripts` directory.
+
+2. Build the installer by first executing `package.py` and then `CI.py`
+
+3. Execute the `RTKJLinkDevicesInstaller` executable.
+
+---
+
+### Manual Installation
+
 > [!NOTE]
 > AmebaDPlus is used as the example
 

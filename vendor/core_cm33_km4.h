@@ -6,6 +6,7 @@
 #define __IOM           volatile
 #define __IO            volatile
 #define __I             volatile const
+#define _LONG_CALL_     __attribute__ ((long_call))
 
 
 /* ***************************************************************************/

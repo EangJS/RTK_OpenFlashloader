@@ -9,6 +9,9 @@
     <ChipInfo Vendor="Realtek" Name="RTL8730_KM0" Core="JLINK_CORE_CORTEX_M23" JLinkScriptFile="jlink_script/AP0_KM0.JLinkScript" />
   </Device>
   <Device>
-    <ChipInfo Vendor="Realtek" Name="RTL8730_KM4" Core="JLINK_CORE_CORTEX_M33" JLinkScriptFile="jlink_script/AP1_KM4.JLinkScript" />
+    <ChipInfo Vendor="Realtek" Name="RTL8730_KM4" Core="JLINK_CORE_CORTEX_M33" WorkRAMAddr="0x30003020" WorkRAMSize="0x8000" JLinkScriptFile="jlink_script/AP1_KM4.JLinkScript" />
+    <FlashBankInfo Name="NOR Flash" BaseAddr="0x08000000">
+      <LoaderInfo Name="Default" MaxSize="0x02000000" Loader="AMEBASMART_32MB.elf" LoaderType="FLASH_ALGO_TYPE_OPEN" />
+    </FlashBankInfo>
   </Device>  
 </Database>

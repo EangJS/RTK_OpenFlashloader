@@ -6,6 +6,7 @@ from pathlib import Path
 target_dirs = {
     "AMEBAGREEN2": "../JLinkDevices/Realtek/AmebaGreen2",
     "AMEBADPLUS": "../JLinkDevices/Realtek/AmebaDPlus",
+    "AMEBASMART": "../JLinkDevices/Realtek/AmebaSmart",
 }
 
 # Source directory to scan

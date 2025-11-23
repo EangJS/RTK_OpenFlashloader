@@ -43,7 +43,7 @@ SECTIONS
 }
 
 
-#ifdef CONFIG_AMEBADPLUS
+#ifdef AMEBADPLUS
 
 SECTIONS
 {
@@ -56,7 +56,7 @@ SECTIONS
   PROVIDE(_memset = 0x272a9);
 }
 
-#else
+#elif defined(AMEBAGREEN2)
 
 SECTIONS
 {
@@ -77,5 +77,22 @@ SECTIONS
     PROVIDE(__rom_bss_end_s__ = 0x30000500);
 
 }
+
+#elif defined(AMEBASMART)
+
+SECTIONS
+{
+    PROVIDE(FLASH_Erase = 0x1e845);
+    PROVIDE(FLASH_TxData = 0x1e725);
+    PROVIDE(FLASH_DeepPowerDown = 0x1e8fd);
+    PROVIDE(WDG_Refresh = 0x21d65);
+    PROVIDE(_memcpy = 0x27939);
+    PROVIDE(_memset = 0x27b01);
+    PROVIDE(SYSCFG_BootFromNor = 0x20af5);
+}
+
+#else 
+
+    #error
 
 #endif

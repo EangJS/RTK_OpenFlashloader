@@ -8,10 +8,11 @@ BUILD_DIR = os.path.join(PROJECT_ROOT, "build")
 
 CMAKE_GENERATOR = "Ninja"
 
-devices = ["AMEBAGREEN2", "AMEBADPLUS"]
+devices = ["AMEBAGREEN2", "AMEBADPLUS", "AMEBASMART"]
 flash_sizes = {
     "AMEBAGREEN2": ["4MB", "16MB"],
     "AMEBADPLUS": ["4MB"],
+    "AMEBASMART": ["32MB"]
 }
 
 def run_cmd(cmd, cwd=None):

@@ -28,7 +28,7 @@
 #ifdef AMEBAGREEN2
 
 __attribute__((section("DevDscr"))) 
-#if defined(CONFIG_FLASH_SIZE_16MB)
+#if defined(FLASH_SIZE_16MB)
 
 struct FlashDevice const FlashDevice = {
     FLASH_DRV_VERS,                      // Driver Version
@@ -90,5 +90,27 @@ __attribute__((section("DevDscr"))) struct FlashDevice const FlashDevice  =  {
     SECTOR_END
 };
 
-#endif /* AMEBADPLUS */
+#elif defined(AMEBASMART) /* AMEBADPLUS */
 
+#if defined(FLASH_SIZE_32MB)
+
+__attribute__((section("DevDscr"))) const struct FlashDevice FlashDevice = {
+    FLASH_DRV_VERS,
+    "W25Q256 32MB External QSPI Flash",
+    EXTSPI,
+    0x08000000,              // Mapped QSPI start address
+    0x02000000,              // 32 MB total size (256 Mbit)
+
+    1024,                    // 1 KB page size
+    0,
+    0xFF,
+    50,                      // Typical program timeout
+    4000,                    // Typical erase timeout
+
+    0x001000, 0x08000000,    // 4 KB uniform sectors
+    SECTOR_END
+};
+
+#endif /* FLASH_SIZE_32MB */
+
+#endif /* AMEBASMART */

@@ -1,12 +1,14 @@
 #include <stddef.h>
-#include "config.h"
-#if CONFIG_AMEBADPLUS
-    #include "rtl8721d.h"
-#else
-    #include "rtl8721f.h"
-#endif /* CONFIG_AMEBADPLUS */
 
-#define _LONG_CALL_     __attribute__ ((long_call))
+#if AMEBADPLUS
+    #include "rtl8721d.h"
+#elif AMEBAGREEN2
+    #include "rtl8721f.h"
+#elif AMEBASMART
+	#include "rtl8730e.h"
+#else
+	#error "No valid device defined!"
+#endif /* AMEBADPLUS */
 
 static inline void __ISB(void) {
     __asm volatile("isb 0xF" ::: "memory");

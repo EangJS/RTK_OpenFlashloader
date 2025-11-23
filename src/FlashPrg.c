@@ -49,8 +49,18 @@ PRG_CODE_SECTION int Init( uint32_t adr, uint32_t clk, uint32_t fnc )
 
     SCB_DisableDCache();
     WDG_Refresh( IWDG_DEV );
+#ifndef AMEBASMART
     FLASH_Read_HandShake_Cmd( 0, 0 );
     FLASH_DeepPowerDown( 0 );
+#else
+	uint32_t boot_from_nor = SYSCFG_BootFromNor();
+    if (boot_from_nor) {
+		/* Nor Flash, already initialized when boot */
+	} else {
+		while(1); // Not support to program when boot from SPI NAND
+	}
+#endif /* AMEBASMART */
+
 
     return 0;
 }
@@ -96,17 +106,23 @@ PRG_CODE_SECTION int EraseSector( uint32_t adr )
  *                    buf:  Page Data
  *    Return Value:   0 - OK,  1 - Failed
  */
-PRG_CODE_SECTION int ProgramPage( uint32_t adr, uint32_t sz, unsigned char *buf )
+PRG_CODE_SECTION int ProgramPage(uint32_t adr, uint32_t sz, unsigned char *buf)
 {
-    WDG_Refresh( IWDG_DEV );
+    WDG_Refresh(IWDG_DEV);
+
+    const uint32_t phys_page = 0x100;
     uint32_t offset = 0;
-    int rc;
 
     while (offset < sz)
     {
-        uint32_t tx_len = MIN( 0x100, sz - offset );
-        FLASH_TxData( adr + offset, tx_len, buf + offset );
-        WDG_Refresh( IWDG_DEV );
+        uint32_t tx_len = MIN(phys_page, sz - offset);
+
+        if ((adr + offset) % phys_page != 0) {
+            return -1;
+        }
+
+        FLASH_TxData(adr + offset, tx_len, buf + offset);
+        WDG_Refresh(IWDG_DEV);
 
         offset += tx_len;
     }

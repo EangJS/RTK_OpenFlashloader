@@ -15,6 +15,8 @@ set(CONFIG_HEADER ${CMAKE_BINARY_DIR}/config.h)
 file(WRITE ${CONFIG_HEADER} "// Auto-generated from project.config\n\n")
 
 set(CONFIG_DEFINES "")
+set(CHIP_NAME "")
+set(FLASH_SIZE "")
 
 if(EXISTS ${PROJECT_CONFIG_FILE})
     message(STATUS "Using config: ${PROJECT_CONFIG_FILE}")
@@ -31,50 +33,58 @@ if(EXISTS ${PROJECT_CONFIG_FILE})
 
             # Add to header
             file(APPEND ${CONFIG_HEADER} "#define ${KEY} ${VALUE}\n")
-
+            
             # Collect defines for compiler & linker
             list(APPEND CONFIG_DEFINES "${KEY}=${VALUE}")
 
-            message(STATUS "Config: ${KEY} = ${VALUE}")
+            message(STATUS "Config: ${KEY}=${VALUE}")
 
             # Extract CHIP_NAME
-            message(STATUS "Processing KEY: ${KEY}")
             if(KEY STREQUAL "AMEBAGREEN2")
                 set(CHIP_NAME "AMEBAGREEN2")
-                message(STATUS "Detected CHIP_NAME: ${CHIP_NAME}")
             elseif(KEY STREQUAL "AMEBADPLUS")
                 set(CHIP_NAME "AMEBADPLUS")
-                message(STATUS "Detected CHIP_NAME: ${CHIP_NAME}")
+            elseif(KEY STREQUAL "AMEBASMART")
+                set(CHIP_NAME "AMEBASMART")
             endif()
-            
+
             if(KEY STREQUAL "FLASH_SIZE_4MB")
                 set(FLASH_SIZE "4MB")
-                message(STATUS "Detected FLASH_SIZE: ${FLASH_SIZE}")
             elseif(KEY STREQUAL "FLASH_SIZE_16MB")
                 set(FLASH_SIZE "16MB")
-                message(STATUS "Detected FLASH_SIZE: ${FLASH_SIZE}")
+            elseif(KEY STREQUAL "FLASH_SIZE_32MB")
+                set(FLASH_SIZE "32MB")
             endif()
-            set(TARGET_NAME "${CHIP_NAME}_${FLASH_SIZE}.elf")
 
         endif()
     endforeach()
 else()
-    message(WARNING "No project.config found")
+    message(FATAL_ERROR "project.config not found")
 endif()
 
-# Include directories
+if(NOT CHIP_NAME)
+    message(FATAL_ERROR "No CHIP_NAME detected from project.config")
+endif()
+
+if(NOT FLASH_SIZE)
+    message(FATAL_ERROR "No FLASH_SIZE detected from project.config")
+endif()
+
+set(TARGET_NAME "${CHIP_NAME}_${FLASH_SIZE}.elf")
+message(STATUS "Target name: ${TARGET_NAME}")
+
 include_directories(
     ${CMAKE_SOURCE_DIR}/inc
     ${CMAKE_SOURCE_DIR}/vendor
 )
 
-# Executable
 add_executable(${TARGET_NAME}
     src/FlashPrg.c
     src/FlashDev.c
 )
 
-# Compiler options
+target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_BINARY_DIR})
+
 target_compile_options(${TARGET_NAME} PRIVATE
     -mcpu=cortex-m33
     -mthumb
@@ -84,8 +94,10 @@ target_compile_options(${TARGET_NAME} PRIVATE
     -fno-builtin
 )
 
-# Include generated header
-target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_BINARY_DIR})
+set(PREPROCESS_DEFS "")
+foreach(def ${CONFIG_DEFINES})
+    list(APPEND PREPROCESS_DEFS "-D${def}")
+endforeach()
 
 # -----------------------------
 # Preprocess linker script
@@ -96,10 +108,11 @@ set(LINKER_SCRIPT_PP ${CMAKE_BINARY_DIR}/FlashLoader.pp.ld)
 add_custom_command(
     OUTPUT ${LINKER_SCRIPT_PP}
     COMMAND ${CMAKE_C_COMPILER} -E -P
+        ${PREPROCESS_DEFS}
         ${LINKER_SCRIPT_SRC}
         -o ${LINKER_SCRIPT_PP}
     DEPENDS ${LINKER_SCRIPT_SRC} ${PROJECT_CONFIG_FILE}
-    COMMENT "Preprocessing linker script ${LINKER_SCRIPT_SRC}"
+    COMMENT "Preprocessing linker script: ${LINKER_SCRIPT_SRC}"
 )
 
 add_custom_target(PreprocessLinker ALL DEPENDS ${LINKER_SCRIPT_PP})
@@ -111,7 +124,8 @@ add_dependencies(${TARGET_NAME} PreprocessLinker)
 target_link_options(${TARGET_NAME} PRIVATE
     -Wl,-T${LINKER_SCRIPT_PP}
     -nostartfiles
-    -Wl,--gc-sections,--no-warn-rwx-segments
+    -Wl,--gc-sections
+    -Wl,--no-warn-rwx-segments
 )
 
 # -----------------------------
@@ -119,5 +133,4 @@ target_link_options(${TARGET_NAME} PRIVATE
 # -----------------------------
 foreach(def ${CONFIG_DEFINES})
     target_compile_definitions(${TARGET_NAME} PRIVATE ${def})
-    target_link_options(${TARGET_NAME} PRIVATE "-Wl,-defsym,${def}")
 endforeach()
