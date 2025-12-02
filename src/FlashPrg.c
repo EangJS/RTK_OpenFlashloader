@@ -40,10 +40,10 @@ PRG_CODE_SECTION int Init( uint32_t adr, uint32_t clk, uint32_t fnc )
 {
     
 #ifdef AMEBAGREEN2
-	_memset((void *) __rom_bss_start__, 0, (__rom_bss_end__ - __rom_bss_start__));
-	_memset((void *) __rom_bss_start_s__, 0, (__rom_bss_end_s__ - __rom_bss_start_s__));
+    _memset((void *) __rom_bss_start__, 0, (__rom_bss_end__ - __rom_bss_start__));
+    _memset((void *) __rom_bss_start_s__, 0, (__rom_bss_end_s__ - __rom_bss_start_s__));
     BOOT_ROM_OSC131_Enable();
-	BOOT_ROM_SPUFlash();
+    BOOT_ROM_SPUFlash();
     BOOT_ROM_InitSpic();
 #endif /* AMEBAGREEN2 */
 
@@ -53,12 +53,12 @@ PRG_CODE_SECTION int Init( uint32_t adr, uint32_t clk, uint32_t fnc )
     FLASH_Read_HandShake_Cmd( 0, 0 );
     FLASH_DeepPowerDown( 0 );
 #else
-	uint32_t boot_from_nor = SYSCFG_BootFromNor();
+    uint32_t boot_from_nor = SYSCFG_BootFromNor();
     if (boot_from_nor) {
-		/* Nor Flash, already initialized when boot */
-	} else {
-		while(1); // Not support to program when boot from SPI NAND
-	}
+        /* Nor Flash, already initialized when boot */
+    } else {
+        while(1); // Not support to program when boot from SPI NAND
+    }
 #endif /* AMEBASMART */
 
 
@@ -81,7 +81,7 @@ PRG_CODE_SECTION int UnInit( uint32_t fnc )
  */
 PRG_CODE_SECTION int EraseChip( void )
 {
-    /* Not Implemented */
+    FLASH_Erase( ERASE_CHIP, 0U );
     
     return 0;
 }
@@ -94,8 +94,7 @@ PRG_CODE_SECTION int EraseChip( void )
 PRG_CODE_SECTION int EraseSector( uint32_t adr )
 {
     WDG_Refresh( IWDG_DEV );
-    FLASH_Erase( 2, adr );
-
+    FLASH_Erase( ERASE_SECTOR, adr );
     return 0;
 }
 

@@ -10,6 +10,13 @@
 	#error "No valid device defined!"
 #endif /* AMEBADPLUS */
 
+/** @defgroup FLASH_Erase_Type
+  * @{
+  */
+#define ERASE_CHIP              0
+#define ERASE_BLOCK             1
+#define ERASE_SECTOR            2
+
 static inline void __ISB(void) {
     __asm volatile("isb 0xF" ::: "memory");
 }
