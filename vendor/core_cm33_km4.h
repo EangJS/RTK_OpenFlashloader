@@ -80,3 +80,8 @@ typedef struct
 #define SCB_DCCISW_SET_Msk                  (0x1FFUL << SCB_DCCISW_SET_Pos)                                         /*!< SCB DCCISW: Set Mask */
 #define SCB_DCCISW_WAY_Pos                  31U                                                                     /*!< SCB DCCISW: Way Position */
 #define SCB_DCCISW_WAY_Msk                  (1UL << SCB_DCCISW_WAY_Pos)                                             /*!< SCB DCCISW: Way Mask */
+
+__attribute__((always_inline)) static inline void __disable_irq(void)
+{
+  __asm volatile ("cpsid i" : : : "memory");
+}

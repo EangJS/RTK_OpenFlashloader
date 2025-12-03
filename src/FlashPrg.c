@@ -28,6 +28,7 @@
 
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define PRG_CODE_SECTION __attribute__((section(".PrgCode")))
+volatile uint32_t erase_count = 0;
 
 /*
  *  Initialize Flash Programming Functions
@@ -38,7 +39,6 @@
  */
 PRG_CODE_SECTION int Init( uint32_t adr, uint32_t clk, uint32_t fnc )
 {
-    
 #ifdef AMEBAGREEN2
     _memset((void *) __rom_bss_start__, 0, (__rom_bss_end__ - __rom_bss_start__));
     _memset((void *) __rom_bss_start_s__, 0, (__rom_bss_end_s__ - __rom_bss_start_s__));
@@ -46,12 +46,12 @@ PRG_CODE_SECTION int Init( uint32_t adr, uint32_t clk, uint32_t fnc )
     BOOT_ROM_SPUFlash();
     BOOT_ROM_InitSpic();
 #endif /* AMEBAGREEN2 */
-
+    FLASH_DeepPowerDown( 0 );
     SCB_DisableDCache();
     WDG_Refresh( IWDG_DEV );
+    __disable_irq();
 #ifndef AMEBASMART
     FLASH_Read_HandShake_Cmd( 0, 0 );
-    FLASH_DeepPowerDown( 0 );
 #else
     uint32_t boot_from_nor = SYSCFG_BootFromNor();
     if (boot_from_nor) {
@@ -81,6 +81,10 @@ PRG_CODE_SECTION int UnInit( uint32_t fnc )
  */
 PRG_CODE_SECTION int EraseChip( void )
 {
+    if ( erase_count % 2 )
+    {
+        WDG_Refresh( IWDG_DEV );
+    }
     FLASH_Erase( ERASE_CHIP, 0U );
     
     return 0;
